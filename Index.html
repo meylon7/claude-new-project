@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>רשימת קניות חכמה</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --color-brand:        oklch(58% 0.16 145);
+    --color-brand-subtle: oklch(58% 0.16 145 / 12%);
+    --color-brand-hover:  oklch(50% 0.17 145);
+
+    --color-bg:           oklch(97% 0.01 145);
+    --color-surface:      oklch(99% 0.005 145);
+    --color-border:       oklch(89% 0.015 145);
+
+    --color-text:         oklch(22% 0.02 145);
+    --color-text-muted:   oklch(50% 0.02 145);
+
+    --color-error:        oklch(55% 0.2 25);
+    --color-error-subtle: oklch(55% 0.2 25 / 10%);
+
+    --text-sm:   clamp(0.85rem, 0.8rem + 0.2vw, 0.9rem);
+    --text-base: clamp(1rem, 0.95rem + 0.2vw, 1.05rem);
+    --text-lg:   clamp(1.2rem, 1.1rem + 0.4vw, 1.35rem);
+    --text-2xl:  clamp(1.6rem, 1.3rem + 1.5vw, 2.1rem);
+
+    --space-1: 0.25rem;
+    --space-2: 0.5rem;
+    --space-3: 0.75rem;
+    --space-4: 1rem;
+    --space-6: 1.5rem;
+    --space-8: 2rem;
+
+    --radius-sm: 6px;
+    --radius-md: 12px;
+    --radius-lg: 20px;
+
+    --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+    --duration-base: 220ms;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--color-bg);
+    color: var(--color-text);
+    font-family: 'Heebo', sans-serif;
+    line-height: 1.8;
+    display: flex;
+    justify-content: center;
+    padding: var(--space-8) var(--space-4);
+  }
+
+  main {
+    width: 100%;
+    max-width: 480px;
+  }
+
+  header {
+    margin-block-end: var(--space-6);
+  }
+
+  h1 {
+    font-size: var(--text-2xl);
+    font-weight: 800;
+    letter-spacing: 0.01em;
+    margin: 0 0 var(--space-2);
+  }
+
+  .subtitle {
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+    margin: 0;
+  }
+
+  .add-form {
+    display: flex;
+    gap: var(--space-2);
+    margin-block-end: var(--space-6);
+  }
+
+  .add-form input[type="text"] {
+    flex: 1;
+    min-width: 0;
+    padding: var(--space-3) var(--space-4);
+    border: 1.5px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    font-family: inherit;
+    font-size: var(--text-base);
+    color: var(--color-text);
+  }
+
+  .add-form input[type="number"] {
+    width: 4.5rem;
+    padding: var(--space-3) var(--space-2);
+    border: 1.5px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    font-family: inherit;
+    font-size: var(--text-base);
+    color: var(--color-text);
+    text-align: center;
+  }
+
+  .add-form input:focus-visible {
+    outline: 2px solid var(--color-brand);
+    outline-offset: 2px;
+    border-color: var(--color-brand);
+  }
+
+  .add-btn {
+    padding: var(--space-3) var(--space-4);
+    border: none;
+    border-radius: var(--radius-md);
+    background: var(--color-brand);
+    color: white;
+    font-family: inherit;
+    font-size: var(--text-base);
+    font-weight: 600;
+    cursor: pointer;
+    transition: background var(--duration-base) var(--ease-out-expo);
+  }
+
+  .add-btn:hover { background: var(--color-brand-hover); }
+  .add-btn:focus-visible {
+    outline: 2px solid var(--color-brand);
+    outline-offset: 3px;
+  }
+
+  ul.items {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    background: var(--color-surface);
+    border: 1.5px solid var(--color-border);
+    border-radius: var(--radius-md);
+    animation: fade-up var(--duration-base) var(--ease-out-expo) both;
+  }
+
+  .item.bought {
+    background: var(--color-brand-subtle);
+    border-color: var(--color-brand-subtle);
+  }
+
+  .item-check {
+    flex-shrink: 0;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: var(--radius-sm);
+    border: 2px solid var(--color-border);
+    background: var(--color-surface);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 0.9rem;
+  }
+
+  .item.bought .item-check {
+    background: var(--color-brand);
+    border-color: var(--color-brand);
+  }
+
+  .item-check:focus-visible {
+    outline: 2px solid var(--color-brand);
+    outline-offset: 2px;
+  }
+
+  .item-name {
+    flex: 1;
+    font-size: var(--text-base);
+    font-weight: 500;
+  }
+
+  .item.bought .item-name {
+    text-decoration: line-through;
+    color: var(--color-text-muted);
+  }
+
+  .item-qty {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    flex-shrink: 0;
+  }
+
+  .item-delete {
+    flex-shrink: 0;
+    border: none;
+    background: transparent;
+    color: var(--color-text-muted);
+    font-size: var(--text-lg);
+    line-height: 1;
+    cursor: pointer;
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-sm);
+    transition: color var(--duration-base), background var(--duration-base);
+  }
+
+  .item-delete:hover {
+    color: var(--color-error);
+    background: var(--color-error-subtle);
+  }
+
+  .item-delete:focus-visible {
+    outline: 2px solid var(--color-error);
+    outline-offset: 2px;
+  }
+
+  .empty-state {
+    text-align: center;
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+    padding: var(--space-8) var(--space-4);
+    border: 1.5px dashed var(--color-border);
+    border-radius: var(--radius-md);
+  }
+
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>רשימת קניות חכמה</h1>
+    <p class="subtitle">מה שצריך לקנות היום</p>
+  </header>
+
+  <form class="add-form" id="addForm">
+    <label for="itemName" class="visually-hidden">שם הפריט</label>
+    <input type="text" id="itemName" placeholder="מה צריך לקנות?" required aria-label="שם הפריט">
+    <label for="itemQty" class="visually-hidden">כמות</label>
+    <input type="number" id="itemQty" min="1" value="1" aria-label="כמות">
+    <button type="submit" class="add-btn">הוספה</button>
+  </form>
+
+  <ul class="items" id="itemsList" aria-live="polite"></ul>
+  <p class="empty-state" id="emptyState" hidden>הרשימה ריקה - הוסיפו את הפריט הראשון למעלה</p>
+</main>
+
+<script>
+  const STORAGE_KEY = 'shopping-list-items';
+
+  function loadItems() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      return raw ? JSON.parse(raw) : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function saveItems(items) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+  }
+
+  let items = loadItems();
+
+  const listEl = document.getElementById('itemsList');
+  const emptyStateEl = document.getElementById('emptyState');
+  const formEl = document.getElementById('addForm');
+  const nameInput = document.getElementById('itemName');
+  const qtyInput = document.getElementById('itemQty');
+
+  function render() {
+    listEl.innerHTML = '';
+    emptyStateEl.hidden = items.length > 0;
+
+    items.forEach((item) => {
+      const li = document.createElement('li');
+      li.className = 'item' + (item.bought ? ' bought' : '');
+
+      const checkBtn = document.createElement('button');
+      checkBtn.type = 'button';
+      checkBtn.className = 'item-check';
+      checkBtn.setAttribute('aria-pressed', item.bought ? 'true' : 'false');
+      checkBtn.setAttribute('aria-label', item.bought ? 'סמן כלא נקנה' : 'סמן כנקנה');
+      checkBtn.textContent = item.bought ? '✓' : '';
+      checkBtn.addEventListener('click', () => toggleBought(item.id));
+
+      const nameSpan = document.createElement('span');
+      nameSpan.className = 'item-name';
+      nameSpan.textContent = item.name;
+
+      const qtySpan = document.createElement('span');
+      qtySpan.className = 'item-qty';
+      qtySpan.textContent = 'x' + item.qty;
+
+      const deleteBtn = document.createElement('button');
+      deleteBtn.type = 'button';
+      deleteBtn.className = 'item-delete';
+      deleteBtn.setAttribute('aria-label', 'מחיקת ' + item.name);
+      deleteBtn.textContent = '✕';
+      deleteBtn.addEventListener('click', () => deleteItem(item.id));
+
+      li.append(checkBtn, nameSpan, qtySpan, deleteBtn);
+      listEl.appendChild(li);
+    });
+  }
+
+  function addItem(name, qty) {
+    items.push({ id: crypto.randomUUID(), name, qty, bought: false });
+    saveItems(items);
+    render();
+  }
+
+  function toggleBought(id) {
+    items = items.map((i) => (i.id === id ? { ...i, bought: !i.bought } : i));
+    saveItems(items);
+    render();
+  }
+
+  function deleteItem(id) {
+    items = items.filter((i) => i.id !== id);
+    saveItems(items);
+    render();
+  }
+
+  formEl.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const name = nameInput.value.trim();
+    const qty = parseInt(qtyInput.value, 10) || 1;
+    if (!name) return;
+    addItem(name, qty);
+    nameInput.value = '';
+    qtyInput.value = '1';
+    nameInput.focus();
+  });
+
+  render();
+</script>
+</body>
+</html>
